@@ -83,14 +83,23 @@ class Board:
         print(self.__queens)
         print()
         for i in range(self.__width):
+            print("| ", end="")
             for j in range(self.__height):
                 print(self.__board[i][j], end=" | ")
             print()
 
 
 if __name__ == "__main__":
+    import time
+
+    st: float = time.time()
     board = Board(8)
     if board.solve_n_queens():
         board.show_board()
     else:
         print("No solution found.")
+    et: float = time.time()
+
+    # get the execution time
+    elapsed_time: float = et - st
+    print('Execution time:', elapsed_time, 'seconds')
