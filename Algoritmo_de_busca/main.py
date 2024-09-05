@@ -97,7 +97,7 @@ def get_neighborhood(mapa, coord):
     return nb
 
 
-mapa, start, end = read_file('Mapa10.txt')
+mapa, start, end = read_file('Mapa30.txt')
 
 
 def busca_largura(mapa):
@@ -114,7 +114,7 @@ def busca_largura(mapa):
         list_vizitados.append(coord)
         os.system('clear')
         printMap(mapa, coord)
-        time.sleep(0.1)
+        time.sleep(0.5)
         if coord == end:
             print("nós testados " + str(testes) + "\n")
             print("custo do caminho " + str(custo) + "\n")
@@ -140,7 +140,7 @@ def busca_profundidade(mapa):
         list_vizitados.append(coord)
         os.system('clear')
         printMap(mapa, coord)
-        time.sleep(0.1)
+        time.sleep(0.5)
         if coord == end:
             print("nós testados " + str(testes) + "\n")
             print("custo do caminho " + str(custo) + "\n")
@@ -157,31 +157,37 @@ def manhattan_distance(_from, to):
 
 
 def busca_a_estrela(mapa):
-    list_caminho = PriorityQueue()
-    list_vizitados: list = []
-    testes: int = 0
     global start, end
-    list_caminho.put(0,(start, 0))
-    while list_caminho:
-        testes += 1
-        fronteira = list_caminho.get()
-        distancia_atual = fronteira[1][0]
-        coord = fronteira[1][1]
-        list_vizitados.append(coord)
+
+    fronteira = PriorityQueue()
+    fronteira.put((0, (start, 0)))
+
+    visitados = []
+    n_tests = 0
+
+    while fronteira:
+        n_tests += 1
+        node = fronteira.get()
+        coord = node[1][0]
+        distacia_atual = node[1][1]
+        visitados.append(coord)
+
         os.system('clear')
         printMap(mapa, coord)
-        time.sleep(0.1)
-        if coord == end:
-            print("nós testados " + str(testes) + "\n")
-            print("custo do caminho " + str(custo) + "\n")
-            return
-        for vizinho in get_neighborhood(mapa, coord):
-            if vizinho not in list_vizitados:
-                gx = manhattan_distance(vizinho, end)
-                hx = get_value_from_map(mapa, vizinho)
-                fx = gx + hx
-                list_caminho.append(fx,(vizinho, fx))
+        time.sleep(0.5)
 
-busca_largura(mapa)
+        if coord == end:
+            print("testes a*", n_tests)
+            print("custo a*", distacia_atual)
+            return
+
+        for vizinho in get_neighborhood(mapa, coord):
+            if vizinho not in visitados:
+                gx = distacia_atual + get_value_from_map(mapa, vizinho)
+                hx = manhattan_distance(vizinho, end)
+                fx = gx + hx
+                fronteira.put((fx, (vizinho, gx)))
+
+#busca_largura(mapa)
 #busca_profundidade(mapa)
-# busca_a_estrela(mapa)
+busca_a_estrela(mapa)
